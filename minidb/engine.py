@@ -24,6 +24,7 @@ class StorageEngine:
         if key not in self._store:
             raise KeyError("Key not found")
 
+        self.log.append_delete(key)
         del self._store[key]
 
     def count(self) -> int:
