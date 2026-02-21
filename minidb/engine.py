@@ -1,4 +1,5 @@
 from typing import Dict
+from minidb.storage import LogStorage
 
 class StorageEngine:
 
