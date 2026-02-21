@@ -4,7 +4,8 @@ from minidb.storage import LogStorage
 class StorageEngine:
 
     def __init__(self):
-        self._store: Dict[bytes, bytes] = {}
+        self.log = LogStorage()
+        self._store = self.log.replay()
 
     def put(self, key: bytes, value: bytes) -> None:
         if not isinstance(key, bytes) or not isinstance(value, bytes):
