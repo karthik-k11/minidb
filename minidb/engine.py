@@ -11,6 +11,7 @@ class StorageEngine:
         if not isinstance(key, bytes) or not isinstance(value, bytes):
             raise TypeError("Keys and values must be bytes")
 
+        self.log.append_put(key, value)
         self._store[key] = value
 
     def get(self, key: bytes) -> bytes:
