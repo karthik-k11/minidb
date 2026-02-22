@@ -69,3 +69,15 @@ def insert_non_full(self, node, key, value):
                 i += 1
 
         self.insert_non_full(node.children[i], key, value)
+
+def insert(self, key, value):
+    root = self.root
+
+    if len(root.keys) == ORDER - 1:
+        new_root = BTreeNode(leaf=False)
+        new_root.children.append(root)
+
+        self.split_child(new_root, 0)
+        self.root = new_root
+
+    self.insert_non_full(self.root, key, value)
