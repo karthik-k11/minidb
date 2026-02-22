@@ -42,3 +42,30 @@ def split_child(self, parent, index):
     if not full_child.leaf:
         new_child.children = full_child.children[mid + 1:]
         full_child.children = full_child.children[:mid + 1]
+
+def insert_non_full(self, node, key, value):
+    i = len(node.keys) - 1
+
+    if node.leaf:
+        node.keys.append(None)
+        node.values.append(None)
+
+        while i >= 0 and key < node.keys[i]:
+            node.keys[i + 1] = node.keys[i]
+            node.values[i + 1] = node.values[i]
+            i -= 1
+
+        node.keys[i + 1] = key
+        node.values[i + 1] = value
+    else:
+        while i >= 0 and key < node.keys[i]:
+            i -= 1
+        i += 1
+
+        if len(node.children[i].keys) == ORDER - 1:
+            self.split_child(node, i)
+
+            if key > node.keys[i]:
+                i += 1
+
+        self.insert_non_full(node.children[i], key, value)
