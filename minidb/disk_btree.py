@@ -56,3 +56,57 @@ class DiskBTreeNode:
         node.children = children if not leaf else []
 
         return node
+class DiskBTree:
+    def __init__(self, file_path="minidb.tree"):
+        self.pager = Pager(file_path)
+
+        if self.pager.file_path.stat().st_size == 0:
+            root_page = self.pager.allocate_page()
+            root = DiskBTreeNode(root_page, leaf=True)
+            self.write_node(root)
+
+        self.root_page = 0
+
+    def read_node(self, page_id):
+        page = self.pager.read_page(page_id)
+        return DiskBTreeNode.deserialize(page_id, page.data)
+
+    def write_node(self, node):
+        page = self.pager.read_page(node.page_id)
+        page.write(0, node.serialize())
+        self.pager.write_page(page)
+
+    def search(self, page_id, key):
+        node = self.read_node(page_id)
+
+        i = 0
+        while i < len(node.keys) and key > node.keys[i]:
+            i += 1
+
+        if i < len(node.keys) and key == node.keys[i]:
+            return node.values[i]
+
+        if node.leaf:
+            return None
+
+        return self.search(node.children[i], key)
+
+    def insert_simple(self, key, value):
+        node = self.read_node(self.root_page)
+
+        if len(node.keys) >= MAX_KEYS:
+            raise Exception("Root full (splitting tomorrow)")
+
+        i = len(node.keys) - 1
+        node.keys.append(0)
+        node.values.append(0)
+
+        while i >= 0 and key < node.keys[i]:
+            node.keys[i + 1] = node.keys[i]
+            node.values[i + 1] = node.values[i]
+            i -= 1
+
+        node.keys[i + 1] = key
+        node.values[i + 1] = value
+
+        self.write_node(node)
