@@ -1,7 +1,7 @@
 from cli import start_cli
 from minidb.pager import Pager
 from minidb.btree import BTree
-
+from minidb.disk_btree import DiskBTree
 
 pager = Pager()
 page_id = pager.allocate_page()
@@ -21,6 +21,15 @@ for i in [10, 20, 5, 6, 12, 30, 7, 17]:
 
 print(tree.search(tree.root, 6))
 print(tree.search(tree.root, 17))
+
+tree = DiskBTree()
+
+tree.insert_simple(10, 100)
+tree.insert_simple(5, 50)
+tree.insert_simple(20, 200)
+
+print(tree.search(0, 5))
+print(tree.search(0, 20))
 
 if __name__ == "__main__":
     start_cli()
