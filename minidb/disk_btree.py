@@ -132,3 +132,35 @@ class DiskBTree:
         self.write_node(full_child)
         self.write_node(new_child)
         self.write_node(parent)
+    
+    def insert_non_full(self, node, key, value):
+        i = len(node.keys) - 1
+
+        if node.leaf:
+            node.keys.append(0)
+            node.values.append(0)
+
+            while i >= 0 and key < node.keys[i]:
+                node.keys[i + 1] = node.keys[i]
+                node.values[i + 1] = node.values[i]
+                i -= 1
+            node.keys[i + 1] = key
+            node.values[i + 1] = value
+            self.write_node(node)
+
+        else:
+            while i >= 0 and key < node.keys[i]:
+                i -= 1
+            i += 1
+
+            child = self.read_node(node.children[i])
+
+            if len(child.keys) == MAX_KEYS:
+                self.split_child(node, i)
+                node = self.read_node(node.page_id)
+
+                if key > node.keys[i]:
+                    i += 1
+
+            child = self.read_node(node.children[i])
+            self.insert_non_full(child, key, value)
