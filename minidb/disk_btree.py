@@ -25,10 +25,14 @@ class DiskBTreeNode:
 
     def serialize(self):
         key_count = len(self.keys)
+        keys = self.keys[:MAX_KEYS]
+        keys += [0] * (MAX_KEYS - len(keys))
 
-        keys = self.keys + [0] * (MAX_KEYS - len(self.keys))
-        values = self.values + [0] * (MAX_KEYS - len(self.values))
-        children = self.children + [0] * (ORDER - len(self.children))
+        values = self.values[:MAX_KEYS]
+        values += [0] * (MAX_KEYS - len(values))
+
+        children = self.children[:ORDER]
+        children += [0] * (ORDER - len(children))
 
         return struct.pack(
             self.FORMAT,
