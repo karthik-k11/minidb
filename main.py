@@ -24,13 +24,6 @@ print(tree.search(tree.root, 17))
 
 tree = DiskBTree()
 
-tree.insert_simple(10, 100)
-tree.insert_simple(5, 50)
-tree.insert_simple(20, 200)
-
-print(tree.search(0, 5))
-print(tree.search(0, 20))
-
 for i in [10, 20, 5, 6, 12, 30, 7, 17, 3, 4, 8]:
     tree.insert(i, i * 10)
 
