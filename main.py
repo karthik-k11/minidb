@@ -31,5 +31,12 @@ tree.insert_simple(20, 200)
 print(tree.search(0, 5))
 print(tree.search(0, 20))
 
+for i in [10, 20, 5, 6, 12, 30, 7, 17, 3, 4, 8]:
+    tree.insert(i, i * 10)
+
+print(tree.search(tree.root_page, 3))
+print(tree.search(tree.root_page, 17))
+print(tree.search(tree.root_page, 30))
+
 if __name__ == "__main__":
     start_cli()
