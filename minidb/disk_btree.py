@@ -91,25 +91,23 @@ class DiskBTree:
 
         return self.search(node.children[i], key)
 
-    def insert_simple(self, key, value):
-        node = self.read_node(self.root_page)
+    def insert(self, key, value):
+        root = self.read_node(self.root_page)
 
-        if len(node.keys) >= MAX_KEYS:
-            raise Exception("Root full (splitting tomorrow)")
+        if len(root.keys) == MAX_KEYS:
+            new_root_page = self.pager.allocate_page()
+            new_root = DiskBTreeNode(new_root_page, leaf=False)
 
-        i = len(node.keys) - 1
-        node.keys.append(0)
-        node.values.append(0)
+            new_root.children.append(self.root_page)
 
-        while i >= 0 and key < node.keys[i]:
-            node.keys[i + 1] = node.keys[i]
-            node.values[i + 1] = node.values[i]
-            i -= 1
+            self.root_page = new_root_page
 
-        node.keys[i + 1] = key
-        node.values[i + 1] = value
+            self.split_child(new_root, 0)
+            self.write_node(new_root)
 
-        self.write_node(node)
+            root = new_root
+
+        self.insert_non_full(root, key, value)
         
     def split_child(self, parent, index):
         full_child = self.read_node(parent.children[index])
