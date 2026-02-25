@@ -110,3 +110,25 @@ class DiskBTree:
         node.values[i + 1] = value
 
         self.write_node(node)
+        
+    def split_child(self, parent, index):
+        full_child = self.read_node(parent.children[index])
+        new_page_id = self.pager.allocate_page()
+        new_child = DiskBTreeNode(new_page_id, leaf=full_child.leaf)
+        mid = MAX_KEYS // 2
+        promoted_key = full_child.keys[mid]
+        promoted_value = full_child.values[mid]
+        new_child.keys = full_child.keys[mid + 1:]
+        new_child.values = full_child.values[mid + 1:]
+        full_child.keys = full_child.keys[:mid]
+        full_child.values = full_child.values[:mid]
+        
+        if not full_child.leaf:
+            new_child.children = full_child.children[mid + 1:]
+            full_child.children = full_child.children[:mid + 1]
+        parent.keys.insert(index, promoted_key)
+        parent.values.insert(index, promoted_value)
+        parent.children.insert(index + 1, new_page_id)
+        self.write_node(full_child)
+        self.write_node(new_child)
+        self.write_node(parent)
