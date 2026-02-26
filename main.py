@@ -2,6 +2,18 @@ from cli import start_cli
 from minidb.pager import Pager
 from minidb.btree import BTree
 from minidb.disk_btree import DiskBTree
+from minidb.db_engine import MiniDB
+
+db = MiniDB()
+
+db.create_table("users")
+users = db.get_table("users")
+
+for i in [1, 2, 3, 4, 5]:
+    users.insert(i, i * 100)
+
+print(users.select(3))
+print(users.select(5))
 
 pager = Pager()
 page_id = pager.allocate_page()
