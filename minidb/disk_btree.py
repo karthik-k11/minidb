@@ -172,7 +172,6 @@ class DiskBTree:
         self._inorder_traverse(self.root_page, results)
         return results
 
-
     def _inorder_traverse(self, page_id, results):
         node = self.read_node(page_id)
 
