@@ -31,7 +31,9 @@ def parse(command: str):
         return Insert(parts[1], parts[2], parts[3])
 
     elif cmd == "SELECT":
-        return Select(parts[1], parts[2])
-
+        if parts[2].upper() == "ALL":
+            return Select(parts[1], "ALL")
+        else:
+            return Select(parts[1], parts[2])
     else:
         raise Exception("Invalid command")
