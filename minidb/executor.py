@@ -1,4 +1,4 @@
-from minidb.query import CreateTable, Insert, Select
+from minidb.query import CreateTable, Insert, Select, BulkInsert
 import time
 
 class Executor:
@@ -35,6 +35,21 @@ class Executor:
                 "plan": plan,
                 "result": result,
                 "time": elapsed
+            }
+        elif isinstance(command, BulkInsert):
+            table = self.db.get_table(command.table_name)
+            
+            start_time = time.perf_counter()
+
+            for i in range(1, command.count + 1):
+                table.insert(i, i * 10)
+
+            end_time = time.perf_counter()
+
+            return {
+                "plan": "Bulk Insert",
+                "rows": command.count,
+                "time": end_time - start_time
             }
 
         else:
