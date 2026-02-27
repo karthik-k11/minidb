@@ -1,45 +1,32 @@
-from minidb.engine import StorageEngine
+from minidb.db_engine import MiniDB
+from minidb.query import parse
+from minidb.executor import Executor
 
 
 def start_cli():
-    engine = StorageEngine()
+    db = MiniDB()
+    executor = Executor(db)
 
-    print("MiniDB v0.1 (in-memory)")
-    print("Commands: PUT key value | GET key | DEL key | COUNT | EXIT")
+    print("MiniDB v0.2")
+    print("Commands:")
+    print("CREATE TABLE name")
+    print("INSERT table key value")
+    print("SELECT table key")
+    print("EXIT")
 
     while True:
         try:
-            command = input("minidb> ").strip()
+            command_str = input("minidb> ")
 
-            if not command:
-                continue
-
-            parts = command.split()
-
-            if parts[0].upper() == "PUT":
-                key = parts[1].encode()
-                value = parts[2].encode()
-                engine.put(key, value)
-                print("OK")
-
-            elif parts[0].upper() == "GET":
-                key = parts[1].encode()
-                value = engine.get(key)
-                print(value.decode())
-
-            elif parts[0].upper() == "DEL":
-                key = parts[1].encode()
-                engine.delete(key)
-                print("Deleted")
-
-            elif parts[0].upper() == "COUNT":
-                print(engine.count())
-
-            elif parts[0].upper() == "EXIT":
+            if command_str.upper() == "EXIT":
                 break
 
-            else:
-                print("Unknown command")
+            command = parse(command_str)
+            if command is None:
+                continue
+
+            result = executor.execute(command)
+            print(result)
 
         except Exception as e:
             print("Error:", e)
