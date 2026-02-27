@@ -12,3 +12,5 @@ class Table:
 
     def select(self, key: int):
         return self.index.search(self.index.root_page, key)
+    def scan_all(self):
+        return self.index.scan_all()
