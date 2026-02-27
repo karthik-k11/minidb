@@ -26,7 +26,19 @@ def start_cli():
                 continue
 
             result = executor.execute(command)
-            print(result)
+            if isinstance(result, dict):
+                print(f"Execution Plan: {result['plan']}")
+
+                if result["plan"] == "Full Table Scan":
+                    print(f"Rows Returned: {len(result['result'])}")
+                else:
+                    print(f"Result: {result['result']}")
+                print(f"Time: {result['time']:.6f} sec")
+
+                if result["plan"] == "Full Table Scan":
+                    print(result["result"])
+            else:
+                print(result)
 
         except Exception as e:
             print("Error:", e)
