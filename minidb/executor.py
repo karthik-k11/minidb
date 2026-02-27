@@ -1,6 +1,5 @@
 from minidb.query import CreateTable, Insert, Select
 
-
 class Executor:
     def __init__(self, db):
         self.db = db
@@ -17,8 +16,13 @@ class Executor:
 
         elif isinstance(command, Select):
             table = self.db.get_table(command.table_name)
-            result = table.select(command.key)
-            return result
+
+            if command.key == "ALL":
+                return table.scan_all()
+
+            else:
+                key = int(command.key)
+                return table.select(key)
 
         else:
             raise Exception("Unknown command type")
