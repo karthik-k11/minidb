@@ -13,7 +13,7 @@ class Insert:
 class Select:
     def __init__(self, table_name, key):
         self.table_name = table_name
-        self.key = int(key)
+        self.key = key
 
 
 def parse(command: str):
