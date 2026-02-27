@@ -166,3 +166,21 @@ class DiskBTree:
 
             child = self.read_node(node.children[i])
             self.insert_non_full(child, key, value)
+        
+    def scan_all(self):
+        results = []
+        self._inorder_traverse(self.root_page, results)
+        return results
+
+
+    def _inorder_traverse(self, page_id, results):
+        node = self.read_node(page_id)
+
+        for i in range(len(node.keys)):
+            if not node.leaf:
+                self._inorder_traverse(node.children[i], results)
+
+            results.append((node.keys[i], node.values[i]))
+
+        if not node.leaf:
+            self._inorder_traverse(node.children[len(node.keys)], results)
