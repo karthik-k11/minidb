@@ -29,14 +29,17 @@ def start_cli():
             if isinstance(result, dict):
                 print(f"Execution Plan: {result['plan']}")
 
-                if result["plan"] == "Full Table Scan":
-                    print(f"Rows Returned: {len(result['result'])}")
-                else:
-                    print(f"Result: {result['result']}")
-                print(f"Time: {result['time']:.6f} sec")
+                if result["plan"] == "Bulk Insert":
+                    print(f"Rows Inserted: {result['rows']}")
 
-                if result["plan"] == "Full Table Scan":
+                elif result["plan"] == "Full Table Scan":
+                    print(f"Rows Returned: {len(result['result'])}")
                     print(result["result"])
+
+                else: 
+                    print(f"Result: {result['result']}")
+                    print(f"Time: {result['time']:.6f} sec")
+
             else:
                 print(result)
 
