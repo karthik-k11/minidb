@@ -39,5 +39,7 @@ def parse(command: str):
             return Select(parts[1], "ALL")
         else:
             return Select(parts[1], parts[2])
+    elif cmd == "BULK_INSERT":
+        return BulkInsert(parts[1], parts[2])
     else:
         raise Exception("Invalid command")
