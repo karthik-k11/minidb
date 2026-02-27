@@ -15,6 +15,10 @@ class Select:
         self.table_name = table_name
         self.key = key
 
+class BulkInsert:
+    def __init__(self, table_name, count):
+        self.table_name = table_name
+        self.count = int(count)
 
 def parse(command: str):
     parts = command.strip().split()
