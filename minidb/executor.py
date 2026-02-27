@@ -1,4 +1,5 @@
 from minidb.query import CreateTable, Insert, Select
+import time
 
 class Executor:
     def __init__(self, db):
@@ -17,12 +18,24 @@ class Executor:
         elif isinstance(command, Select):
             table = self.db.get_table(command.table_name)
 
-            if command.key == "ALL":
-                return table.scan_all()
+            start_time = time.perf_counter()
 
+            if command.key == "ALL":
+                result = table.scan_all()
+                plan = "Full Table Scan"
             else:
                 key = int(command.key)
-                return table.select(key)
+                result = table.select(key)
+                plan = "Index Lookup"
+
+            end_time = time.perf_counter()
+            elapsed = end_time - start_time
+
+            return {
+                "plan": plan,
+                "result": result,
+                "time": elapsed
+            }
 
         else:
             raise Exception("Unknown command type")
